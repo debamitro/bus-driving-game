@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { Bus } from './objects/Bus';
 import { Explosion } from './classes/Explosion';
 import { RoadSegment } from './classes/RoadSegment';
 import { Barrier } from './classes/Barrier';
@@ -14,12 +15,7 @@ document.body.appendChild(renderer.domElement);
 const axesHelper = new THREE.AxesHelper( 5 );
 scene.add( axesHelper );
 
-// Car
-const carGeometry = new THREE.BoxGeometry(1, 0.5, 2);
-const carMaterial = new THREE.MeshPhongMaterial({ color: 0xff0000 });
-const car = new THREE.Mesh(carGeometry, carMaterial);
-car.position.y = 0.5;
-scene.add(car);
+const bus = new Bus(scene);
 
 // Create road segments
 const roadSegments: RoadSegment[] = [];
@@ -47,7 +43,7 @@ const resetBall = () => {
     ball.position.set(
         -5, 
         0.3, 
-        car.position.z - 20 + Math.random() * 10
+        bus.position.z - 20 + Math.random() * 10
     );
 };
 
@@ -61,7 +57,7 @@ scene.add(directionalLight);
 
 // Camera position
 camera.position.set(0, 3, 5);
-camera.lookAt(car.position);
+camera.lookAt(bus.position);
 
 // Game state
 let speed = 0;
@@ -96,15 +92,15 @@ function animate() {
     requestAnimationFrame(animate);
 
     // Update road segments
-    roadSegments.forEach(segment => segment.update(car.position));
+    roadSegments.forEach(segment => segment.update(bus.position));
 
     // Update lane dividers
-    leftDivider.update(car.position);
-    rightDivider.update(car.position);
+    leftDivider.update(bus.position);
+    rightDivider.update(bus.position);
 
     // Update barriers
-    barrierLeft.update(car.position);
-    barrierRight.update(car.position);
+    barrierLeft.update(bus.position);
+    barrierRight.update(bus.position);
 
     // Ball movement
     ball.position.x += ballSpeed.x;
@@ -113,14 +109,14 @@ function animate() {
     ball.rotation.z += ballSpeed.x * 2;
 
     // Check for collision
-    const distance = car.position.distanceTo(ball.position);
+    const distance = bus.position.distanceTo(ball.position);
     if (distance < 1) {
         explosion.trigger(ball.position.clone());
         resetBall();
     }
 
     // Reset ball position when it goes too far or reaches the other side
-    if (ball.position.z > car.position.z + 10 || ball.position.x > 5) {
+    if (ball.position.z > bus.position.z + 10 || ball.position.x > 5) {
         resetBall();
     }
 
@@ -137,20 +133,19 @@ function animate() {
     }
 
     if (keys['ArrowLeft']) {
-        car.rotation.y += 0.03;
-    }
-    if (keys['ArrowRight']) {
-        car.rotation.y -= 0.03;
+        bus.turnLeft();
     }
 
-    // Update car position
-    car.position.x += Math.sin(car.rotation.y) * speed;
-    car.position.z += Math.cos(car.rotation.y) * speed;
+    if (keys['ArrowRight']) {
+        bus.turnRight()
+    }
+
+    bus.move (speed);
 
     // Update camera position
-    camera.position.x = car.position.x;
-    camera.position.z = car.position.z + 5;
-    camera.lookAt(car.position);
+    camera.position.x = bus.position.x;
+    camera.position.z = bus.position.z + 5;
+    camera.lookAt(bus.position);
 
     renderer.render(scene, camera);
 }
