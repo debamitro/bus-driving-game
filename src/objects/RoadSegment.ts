@@ -16,13 +16,13 @@ export class RoadSegment {
         scene.add(this.mesh);
     }
 
-    update(carPosition: THREE.Vector3) {
-        // If the car has passed this segment, move it ahead
-        if (carPosition.z - this.mesh.position.z > 25) {
+    update(busPosition: THREE.Vector3) {
+        // If the bus has passed this segment, move it ahead
+        if (busPosition.z - this.mesh.position.z > 25) {
             this.mesh.position.z += 150; // Move 3 segments ahead (3 * 50)
         }
-        // If the car has moved backwards past this segment
-        if (carPosition.z - this.mesh.position.z < -125) {
+        // If the bus has moved backwards past this segment
+        if (busPosition.z - this.mesh.position.z < -125) {
             this.mesh.position.z -= 150; // Move 3 segments back
         }
     }

@@ -1,19 +1,23 @@
 import * as THREE from 'three';
 import { Bus } from './objects/Bus';
 import { Explosion } from './classes/Explosion';
-import { RoadSegment } from './classes/RoadSegment';
-import { Barrier } from './classes/Barrier';
-import { LaneDivider } from './classes/LaneDivider';
+import { RoadSegment } from './objects/RoadSegment';
+import { Barrier } from './objects/Barrier';
+import { LaneDivider } from './objects/LaneDivider';
 
 // Scene setup
 const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x02CCFE);
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
-const axesHelper = new THREE.AxesHelper( 5 );
-scene.add( axesHelper );
+const horizon = new THREE.CylinderGeometry(400, 400, 100, 32);
+const horizonMaterial = new THREE.MeshPhongMaterial({ color: 0x900C3F });
+const horizonMesh = new THREE.Mesh(horizon, horizonMaterial);
+horizonMesh.position.set(0, 0, -100);
+scene.add(horizonMesh);
 
 const bus = new Bus(scene);
 

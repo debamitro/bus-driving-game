@@ -27,9 +27,9 @@ export class Bus {
         this.mesh.rotation.y -= 0.03;
     }
 
-    move (speed: Number) {
+    move (speed: number) {
         this.mesh.position.x += Math.sin(this.mesh.rotation.y) * speed;
-        this.mesh.position.z += Math.cos(this.mesh.rotation.y) * speed;
+        this.mesh.position.z -= Math.cos(this.mesh.rotation.y) * speed;
         this.position = this.mesh.position;   
     }
 }
