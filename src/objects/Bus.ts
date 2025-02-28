@@ -20,15 +20,21 @@ export class Bus {
     }
 
     turnLeft() {
+        if (this.mesh.rotation.y > Math.PI / 6) {
+            return;
+        }
         this.mesh.rotation.y += 0.03;
     }
 
     turnRight() {
+        if (this.mesh.rotation.y < - Math.PI / 6) {
+            return;
+        }
         this.mesh.rotation.y -= 0.03;
     }
 
     move (speed: number) {
-        this.mesh.position.x += Math.sin(this.mesh.rotation.y) * speed;
+        this.mesh.position.x -= Math.sin(this.mesh.rotation.y) * speed;
         this.mesh.position.z -= Math.cos(this.mesh.rotation.y) * speed;
         this.position = this.mesh.position;   
     }

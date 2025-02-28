@@ -68,7 +68,7 @@ let speed = 0;
 const maxSpeed = 0.3;
 const acceleration = 0.01;
 const deceleration = 0.005;
-const ballSpeed = { x: 0.2, z: 0.15 };
+const ballSpeed = { x: 0.08, z: 0.15 };
 
 // Controls
 const keys: { [key: string]: boolean } = {};
@@ -97,6 +97,7 @@ function animate() {
 
     // Update road segments
     roadSegments.forEach(segment => segment.update(bus.position));
+    horizonMesh.position.z = bus.position.z;
 
     // Update lane dividers
     leftDivider.update(bus.position);

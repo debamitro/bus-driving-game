@@ -35,7 +35,7 @@ export class LaneDivider {
                 segment.position.z += 150; // Move 3 segments ahead
             }
             // If the bus has moved backwards past this segment
-            if (busPosition.z - segment.position.z < -125) {
+            if (busPosition.z - segment.position.z < -25) {
                 segment.position.z -= 150; // Move 3 segments back
             }
         });

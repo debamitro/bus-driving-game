@@ -22,7 +22,7 @@ export class RoadSegment {
             this.mesh.position.z += 150; // Move 3 segments ahead (3 * 50)
         }
         // If the bus has moved backwards past this segment
-        if (busPosition.z - this.mesh.position.z < -125) {
+        if (busPosition.z - this.mesh.position.z < -75) {
             this.mesh.position.z -= 150; // Move 3 segments back
         }
     }
