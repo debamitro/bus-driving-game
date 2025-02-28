@@ -5,7 +5,7 @@ import { RoadSegment } from './objects/RoadSegment';
 import { Barrier } from './objects/Barrier';
 import { LaneDivider } from './objects/LaneDivider';
 import { Sun } from './objects/Sun';
-import { Ball } from './objects/Ball';
+import { Cow } from './objects/Cow';
 
 // Scene setup
 const scene = new THREE.Scene();
@@ -33,8 +33,7 @@ for (let i = 0; i < 4; i++) {
 const leftDivider = new LaneDivider(scene, new THREE.Vector3(-1.67, 0, -75));
 const rightDivider = new LaneDivider(scene, new THREE.Vector3(1.67, 0, -75));
 
-// Ball
-const ball = new Ball(scene, new THREE.Vector3(-5, 0.3, -10));
+const cow = new Cow(scene, new THREE.Vector3(-5, 0.3, -10));
 
 // Add barriers
 const barrierLeft = new Barrier(scene, -5.25);
@@ -56,7 +55,7 @@ let speed = 0;
 const maxSpeed = 0.3;
 const acceleration = 0.01;
 const deceleration = 0.005;
-const ballSpeed = { x: 0.08, z: 0.15 };
+const cowSpeed = { x: 0.08, z: 0.15 };
 
 // Controls
 const keys: { [key: string]: boolean } = {};
@@ -98,17 +97,14 @@ function animate() {
     // Keep sun fixed relative to camera
     sun.update(camera.position);
 
-    // Ball movement
-    ball.update(ballSpeed);
+    cow.update(cowSpeed);
 
-    // Check if ball hits barriers
-    if (ball.position.x <= -5 || ball.position.x >= 5) {
-        ball.reset(bus.position);
+    if (cow.position.x <= -5 || cow.position.x >= 5) {
+        cow.reset(bus.position);
     }
 
-    // Reset ball if it gets too far
-    if (ball.position.z - bus.position.z < -40) {
-        ball.reset(bus.position);
+    if (cow.position.z - bus.position.z < -40) {
+        cow.reset(bus.position);
     }
 
     // Update explosion particles

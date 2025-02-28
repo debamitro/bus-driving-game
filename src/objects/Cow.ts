@@ -1,7 +1,7 @@
 import { Scene, Vector3, Group } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/Addons.js';
 
-export class Ball {
+export class Cow {
     thing: Group;
     position: Vector3;
     loaded: Boolean = false;
