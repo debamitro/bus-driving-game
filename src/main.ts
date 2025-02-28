@@ -5,6 +5,7 @@ import { RoadSegment } from './objects/RoadSegment';
 import { Barrier } from './objects/Barrier';
 import { LaneDivider } from './objects/LaneDivider';
 import { Sun } from './objects/Sun';
+import { Ball } from './objects/Ball';
 
 // Scene setup
 const scene = new THREE.Scene();
@@ -33,24 +34,11 @@ const leftDivider = new LaneDivider(scene, new THREE.Vector3(-1.67, 0, -75));
 const rightDivider = new LaneDivider(scene, new THREE.Vector3(1.67, 0, -75));
 
 // Ball
-const ballGeometry = new THREE.SphereGeometry(0.3);
-const ballMaterial = new THREE.MeshPhongMaterial({ color: 0x0000ff });
-const ball = new THREE.Mesh(ballGeometry, ballMaterial);
-ball.position.set(-5, 0.3, -10);
-scene.add(ball);
+const ball = new Ball(scene, new THREE.Vector3(-5, 0.3, -10));
 
 // Add barriers
 const barrierLeft = new Barrier(scene, -5.25);
 const barrierRight = new Barrier(scene, 5.25);
-
-// Update ball reset position to be relative to car
-const resetBall = () => {
-    ball.position.set(
-        -5, 
-        0.3, 
-        bus.position.z - 20 + Math.random() * 10
-    );
-};
 
 const sun = new Sun(scene);
 
@@ -111,18 +99,16 @@ function animate() {
     sun.update(camera.position);
 
     // Ball movement
-    ball.position.x += ballSpeed.x;
+    ball.update(ballSpeed);
 
-    // Check for collision
-    const distance = bus.position.distanceTo(ball.position);
-    if (distance < 1) {
-        explosion.trigger(ball.position.clone());
-        resetBall();
+    // Check if ball hits barriers
+    if (ball.position.x <= -5 || ball.position.x >= 5) {
+        ball.reset(bus.position);
     }
 
-    // Reset ball position when it goes too far or reaches the other side
-    if (ball.position.z > bus.position.z + 10 || ball.position.x > 5) {
-        resetBall();
+    // Reset ball if it gets too far
+    if (ball.position.z - bus.position.z < -40) {
+        ball.reset(bus.position);
     }
 
     // Update explosion particles
