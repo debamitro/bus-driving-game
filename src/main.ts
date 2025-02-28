@@ -13,10 +13,10 @@ const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
-const horizon = new THREE.CylinderGeometry(400, 400, 100, 32);
-const horizonMaterial = new THREE.MeshPhongMaterial({ color: 0x900C3F });
+const horizon = new THREE.CylinderGeometry(1000, 1000, 100, 32);
+const horizonMaterial = new THREE.MeshPhongMaterial({ color: 0x8B4513 });
 const horizonMesh = new THREE.Mesh(horizon, horizonMaterial);
-horizonMesh.position.set(0, 0, -100);
+horizonMesh.position.set(0, -100, 0);
 scene.add(horizonMesh);
 
 const bus = new Bus(scene);
@@ -51,10 +51,40 @@ const resetBall = () => {
     );
 };
 
-// Lighting
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-scene.add(ambientLight);
+// Create sun
+const sunGeometry = new THREE.CircleGeometry(20, 32);
+const sunMaterial = new THREE.MeshBasicMaterial({ 
+    color: 0xFFFF00,
+    side: THREE.DoubleSide
+});
+const sun = new THREE.Mesh(sunGeometry, sunMaterial);
+sun.position.set(200, 50, -500); // Position high in the sky
+scene.add(sun);
 
+// Create sun glow
+const glowGeometry = new THREE.CircleGeometry(25, 32); // Slightly larger than the sun
+const glowTexture = new THREE.CanvasTexture((() => {
+    const canvas = document.createElement('canvas');
+    canvas.width = 256;
+    canvas.height = 256;
+    const ctx = canvas.getContext('2d')!;
+    const gradient = ctx.createRadialGradient(128, 128, 80, 128, 128, 128);
+    gradient.addColorStop(0, 'rgba(255, 255, 100, 1)');
+    gradient.addColorStop(1, 'rgba(255, 255, 100, 0)');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, 256, 256);
+    return canvas;
+})());
+const glowMaterial = new THREE.MeshBasicMaterial({
+    map: glowTexture,
+    transparent: true,
+    side: THREE.DoubleSide
+});
+const sunGlow = new THREE.Mesh(glowGeometry, glowMaterial);
+sunGlow.position.copy(sun.position);
+scene.add(sunGlow);
+
+// Lighting
 const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
 directionalLight.position.set(5, 5, 5);
 scene.add(directionalLight);
@@ -106,11 +136,14 @@ function animate() {
     barrierLeft.update(bus.position);
     barrierRight.update(bus.position);
 
+    // Keep sun fixed relative to camera
+    sun.position.x = camera.position.x + 200;
+    sun.position.z = camera.position.z - 500;
+    sun.position.y = 50;
+    sunGlow.position.copy(sun.position);
+
     // Ball movement
     ball.position.x += ballSpeed.x;
-    ball.position.z += ballSpeed.z;
-    ball.rotation.x -= ballSpeed.z * 2;
-    ball.rotation.z += ballSpeed.x * 2;
 
     // Check for collision
     const distance = bus.position.distanceTo(ball.position);
